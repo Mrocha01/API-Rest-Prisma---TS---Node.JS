@@ -12,19 +12,61 @@ export default {
 
       if (userExists) {
         return res
-          .status(404)
+          .status(406)
           .json({ error: true, message: "E-mail já cadastrado!" });
       }
 
       const user = await prisma.user.create({ data: { name, email } });
 
-      return res
-        .status(201)
-        .json({
-          error: false,
-          message: "Usuario cadastrado com sucesso!",
-          user,
-        });
+      return res.status(201).json({
+        error: false,
+        message: "Usuario cadastrado com sucesso!",
+        user,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Erro interno do servidor." });
+    }
+  },
+
+  async getUserById(req: Request, res: Response) {
+    try {
+      const userId = parseInt(req.params.id);
+
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ error: true, message: "Usuario não encontrado!" });
+      }
+
+      return res.status(200).json({
+        error: false,
+        message: "Usuario encontrado com sucesso!",
+        user,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Erro interno do servidor." });
+    }
+  },
+
+  async getUserByEmail(req: Request, res: Response) {
+    try {
+      const email = req.params.email;
+
+      const user = await prisma.user.findUnique({ where: { email: email } });
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ error: true, message: "Usuario não encontrado!" });
+      }
+
+      return res.status(200).json({
+        error: false,
+        message: "Usuario encontrado com sucesso!",
+        user,
+      });
     } catch (error) {
       return res.status(500).json({ message: "Erro interno do servidor." });
     }
