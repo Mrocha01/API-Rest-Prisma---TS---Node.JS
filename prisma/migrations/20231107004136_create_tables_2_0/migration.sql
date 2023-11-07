@@ -13,7 +13,7 @@ CREATE TABLE `posts` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(191) NOT NULL,
     `content` VARCHAR(191) NULL,
-    `published` BOOLEAN NOT NULL DEFAULT false,
+    `published` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `authorId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
