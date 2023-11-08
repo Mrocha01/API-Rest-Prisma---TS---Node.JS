@@ -14,9 +14,9 @@ export default {
         });
       }
 
-      const userId = parseInt(authorId);
-
-      const user = await prisma.user.findUnique({ where: { id: userId } });
+      const user = await prisma.user.findUnique({
+        where: { id: Number(req.body.authorId) },
+      });
 
       if (!user) {
         return res
@@ -30,7 +30,7 @@ export default {
         data: {
           title,
           content,
-          authorId: userId,
+          authorId,
           published: currentTime,
         },
       });
