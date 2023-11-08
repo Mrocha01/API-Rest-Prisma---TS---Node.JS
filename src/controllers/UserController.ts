@@ -32,6 +32,13 @@ export default {
     try {
       const { id } = req.params;
 
+      if (isNaN(Number(id))) {
+        return res.status(400).json({
+          error: true,
+          message: "ID inválido. Forneça apenas números!.",
+        });
+      }
+
       const user = await prisma.user.findUnique({ where: { id: Number(id) } });
 
       if (!user) {
