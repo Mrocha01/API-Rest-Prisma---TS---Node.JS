@@ -78,4 +78,40 @@ export default {
       return res.status(500).json({ message: "Erro interno do servidor." });
     }
   },
+
+  async updateUserById(req: Request, res: Response) {
+    try {
+      const { id, name } = req.body;
+
+      if (isNaN(Number(id))) {
+        return res.status(400).json({
+          error: true,
+          message: "ID inválido. Forneça apenas números!.",
+        });
+      }
+
+      const userExists = await prisma.user.findUnique({
+        where: { id: Number(id) },
+      });
+
+      if (!userExists) {
+        return res
+          .status(404)
+          .json({ error: true, message: "Usuario não encontrado!" });
+      }
+
+      const updateUser = await prisma.user.update({
+        where: { id: Number(req.body.id) },
+        data: { name },
+      });
+
+      return res.status(200).json({
+        error: false,
+        message: "Usuario alterado com sucesso!",
+        updateUser,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Erro interno do servidor." });
+    }
+  },
 };
