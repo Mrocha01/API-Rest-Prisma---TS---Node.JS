@@ -71,4 +71,33 @@ export default {
       return res.status(500).json({ message: "Erro interno do servidor." });
     }
   },
+
+  async removePost(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      if (isNaN(Number(id))) {
+        return res.status(400).json({
+          error: true,
+          message: "ID inválido. Forneça apenas números!.",
+        });
+      }
+
+      const post = await prisma.post.delete({ where: { id: Number(id) } });
+
+      if (!post) {
+        return res
+          .status(404)
+          .json({ error: true, message: "Post não encontrado!" });
+      }
+
+      return res.status(201).json({
+        error: false,
+        message: "Posts removido com sucesso!",
+        post,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Erro interno do servidor." });
+    }
+  },
 };
