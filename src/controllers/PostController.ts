@@ -14,6 +14,13 @@ export default {
         });
       }
 
+      if (isNaN(Number(authorId))) {
+        return res.status(400).json({
+          error: true,
+          message: "ID inválido. Forneça apenas números!.",
+        });
+      }
+
       const user = await prisma.user.findUnique({
         where: { id: Number(req.body.authorId) },
       });
