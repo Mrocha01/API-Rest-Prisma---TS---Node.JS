@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { prisma } from "../db";
 import { format } from "date-fns";
+import { CreatePostService } from "../service/CreatePostService";
+import { PostRepository } from "../repositories/PostRepository";
 
 export default {
   async createPost(req: Request, res: Response) {
@@ -33,14 +35,11 @@ export default {
 
       const currentTime = new Date();
 
-      const post = await prisma.post.create({
-        data: {
-          title,
-          content,
-          authorId,
-          published: currentTime,
-        },
-      });
+      const createPost = new CreatePostService(new PostRepository());
+
+      const post = await createPost.execute(title, content, authorId);
+
+      post.published = currentTime;
 
       return res.status(201).json({
         error: false,
